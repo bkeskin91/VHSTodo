@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             TodoItem newTodo = gson.fromJson(jsonItem,TodoItem.class);
             this.TodoList.add(newTodo);
             this.mAdapter.notifyDataSetChanged();
+            //Change
         }
     }
 
