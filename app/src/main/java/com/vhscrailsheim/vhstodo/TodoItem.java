@@ -1,12 +1,18 @@
 package com.vhscrailsheim.vhstodo;
 
-public class TodoItem {
-    private int mImageResource;
+import android.graphics.Bitmap;
+import android.os.Parcelable;
+
+
+import java.io.Serializable;
+
+ public  class TodoItem implements Serializable {
+    private Bitmap mImageResource;
     private String mText1;
     private String mText2;
     private boolean misDone;
 
-    public TodoItem(int imageResource, String text1, String text2, Boolean isDone)
+    public TodoItem(Bitmap imageResource, String text1, String text2, Boolean isDone)
     {
         this.mImageResource = imageResource;
         this.mText1 = text1;
@@ -14,7 +20,7 @@ public class TodoItem {
         this.misDone = isDone;
     }
 
-    public int getImageResource() {
+    public Bitmap getImageResource() {
         return mImageResource;
     }
 

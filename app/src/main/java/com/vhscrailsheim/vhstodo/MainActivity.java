@@ -8,15 +8,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     //Dieser Adapter stellt die "Brücke" zwischen Layout und Daten dar.
-    private RecyclerView.Adapter mAdapter;
+   // private RecyclerView.Adapter mAdapter;
+    private TodoListAdapter mAdapter;
     //Dieses Objekt ist verantwortlich für die Darstellung
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private ArrayList<TodoItem> TodoList;
 
 
 
@@ -24,26 +29,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TodoList = new ArrayList<>();
 
 
-        ArrayList<Integer> jahresZahlen = new ArrayList<>();
 
-        ArrayList<TodoItem> unerledigt = new ArrayList<>();
-
-        unerledigt.add(new TodoItem(R.drawable.ic_android_black, "VHS Kurs", "Kurs um 18:30 Uhr besuchen.", false));
-        unerledigt.add(new TodoItem(R.drawable.ic_call_black, "Business Call", "Geschäftspartner anrufen.", false));
-
-        ArrayList<TodoItem> erledigt = new ArrayList<>();
-        erledigt.add(new TodoItem(R.drawable.ic_cake_black, "Kuchen backen", "Kuchen für Familienbesuch backen.", true));
 
 
         mRecyclerView = findViewById(R.id.todosList);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new TodoListAdapter(unerledigt);
+        mAdapter = new TodoListAdapter(TodoList);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new TodoListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+
+            }
+
+            @Override
+            public void onIsDoneClick(int position) {
+                TodoList.remove(position);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
 
 
     }
@@ -52,8 +63,24 @@ public class MainActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(MainActivity.this,AddTodo.class);
 
-        startActivity(intent);
+        startActivityForResult(intent,0);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // super.onActivityResult(requestCode,resultCode,data);
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            String jsonItem = (String) extras.get("NewTodo");
+            Gson gson = new Gson();
+            TodoItem newTodo = gson.fromJson(jsonItem,TodoItem.class);
+            this.TodoList.add(newTodo);
+            this.mAdapter.notifyDataSetChanged();
+        }
+    }
+
+
 
 
 
